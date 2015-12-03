@@ -140,7 +140,7 @@ $('#element').hcSticky('stop');
 	</tr>
 	<tr>
 		<td><strong>off</strong></td>
-		<td>Turnes off the sticky completely.</td>
+		<td>Turns off the sticky completely.</td>
 	</tr>
 	<tr>
 		<td><strong>on</strong></td>
@@ -150,6 +150,10 @@ $('#element').hcSticky('stop');
 		<td><strong>reinit</strong></td>
 		<td>Recalculates sticky size. Useful after altering DOM elements inside sticky.</td>
 	</tr>
+    <tr>
+        <td><strong>resize</strong></td>
+        <td>Resize the sticky element. Useful if you don’t want to send a global resize event which results in an expensive redraw.</td>
+    </tr>
 	<tr>
 		<td><strong>destroy</strong></td>
 		<td>Completely destroys sticky and reverts element to original state.</td>
