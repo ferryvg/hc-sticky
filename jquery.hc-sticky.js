@@ -1,68 +1,75 @@
-// jQuery HC-Sticky
-// =============
-// Version: 1.2.43
-// Copyright: Some Web Media
-// Author: Some Web Guy
-// Author URL: http://twitter.com/some_web_guy
-// Website: http://someweblog.com/
-// Plugin URL: https://github.com/somewebmedia/hc-sticky
-// License: Released under the MIT License www.opensource.org/licenses/mit-license.php
-// Description: Cross-browser jQuery plugin that makes any element attached to the page and always visible while you scroll.
+"use strict";
 
-(function($, window, undefined) {
-	"use strict";
+//*------------------------------------------------------------------*
+
+var $ = require('jquery');
+
+//*------------------------------------------------------------------*
+
+(function($){
+
+	// jQuery HC-Sticky
+	// =============
+	// Version: 1.2.43
+	// Copyright: Some Web Media
+	// Author: Some Web Guy
+	// Author URL: http://twitter.com/some_web_guy
+	// Website: http://someweblog.com/
+	// Plugin URL: https://github.com/somewebmedia/hc-sticky
+	// License: Released under the MIT License www.opensource.org/licenses/mit-license.php
+	// Description: Cross-browser jQuery plugin that makes any element attached to the page and always visible while you scroll.
 
 	// console.log shortcut
 	var log = function(t){console.log(t)};
 
 	var $window = $(window),
-		document = window.document,
-		$document = $(document);
+			document = window.document,
+			$document = $(document);
 
 	// detect IE version
 	var ie = (function(){var undef, v = 3, div = document.createElement('div'), all = div.getElementsByTagName('i'); while (div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->', all[0]){}; return v > 4 ? v : undef})();
 
 	/*----------------------------------------------------
-						Global functions
-	----------------------------------------------------*/
+	 Global functions
+	 ----------------------------------------------------*/
 
 	// check for scroll direction and speed
-	var getScroll = function() {
+	var hcGetScroll = function() {
 		var pageXOffset = window.pageXOffset !== undefined ? window.pageXOffset : (document.compatMode == "CSS1Compat" ? window.document.documentElement.scrollLeft : window.document.body.scrollLeft),
-			pageYOffset = window.pageYOffset !== undefined ? window.pageYOffset : (document.compatMode == "CSS1Compat" ? window.document.documentElement.scrollTop : window.document.body.scrollTop);
+				pageYOffset = window.pageYOffset !== undefined ? window.pageYOffset : (document.compatMode == "CSS1Compat" ? window.document.documentElement.scrollTop : window.document.body.scrollTop);
 
-		if (typeof getScroll.x == 'undefined') {
-			getScroll.x = pageXOffset;
-			getScroll.y = pageYOffset;
+		if (typeof hcGetScroll.x == 'undefined') {
+			hcGetScroll.x = pageXOffset;
+			hcGetScroll.y = pageYOffset;
 		}
-		if (typeof getScroll.distanceX == 'undefined') {
-			getScroll.distanceX = pageXOffset;
-			getScroll.distanceY = pageYOffset;
+		if (typeof hcGetScroll.distanceX == 'undefined') {
+			hcGetScroll.distanceX = pageXOffset;
+			hcGetScroll.distanceY = pageYOffset;
 		} else {
-			getScroll.distanceX = pageXOffset - getScroll.x;
-			getScroll.distanceY = pageYOffset - getScroll.y;
+			hcGetScroll.distanceX = pageXOffset - hcGetScroll.x;
+			hcGetScroll.distanceY = pageYOffset - hcGetScroll.y;
 		}
 
-		var diffX = getScroll.x - pageXOffset,
-			diffY = getScroll.y - pageYOffset;
+		var diffX = hcGetScroll.x - pageXOffset,
+				diffY = hcGetScroll.y - pageYOffset;
 
-		getScroll.direction = diffX < 0 ? 'right' :
-			diffX > 0 ? 'left' :
-			diffY <= 0 ? 'down' :
-			diffY > 0 ? 'up' : 'first';
+		hcGetScroll.direction = diffX < 0 ? 'right' :
+				diffX > 0 ? 'left' :
+						diffY <= 0 ? 'down' :
+								diffY > 0 ? 'up' : 'first';
 
-		getScroll.x = pageXOffset;
-		getScroll.y = pageYOffset;
+		hcGetScroll.x = pageXOffset;
+		hcGetScroll.y = pageYOffset;
 	};
-	$window.on('scroll', getScroll);
+	$window.on('scroll', hcGetScroll);
 
 
 	// little original style plugin
-	$.fn.style = function(style) {
+	$.fn.hcStyle = function(style) {
 		if (!style) return null;
 
 		var $this = $(this),
-			value;
+				value;
 
 		// clone element
 		var $clone = $this.clone().css('display','none');
@@ -101,8 +108,8 @@
 
 
 	/*----------------------------------------------------
-						jQuery plugin
-	----------------------------------------------------*/
+	 jQuery plugin
+	 ----------------------------------------------------*/
 
 	$.fn.extend({
 
@@ -135,8 +142,8 @@
 				stop: function(){
 					$(this).pluginOptions('hcSticky', {on: false}).each(function(){
 						var $this = $(this),
-							options = $this.pluginOptions('hcSticky'),
-							$wrapper = $this.parent('.' + options.wrapperClassName);
+								options = $this.pluginOptions('hcSticky'),
+								$wrapper = $this.parent('.' + options.wrapperClassName);
 
 						// set current position
 						var top = $this.offset().top - $wrapper.offset().top;
@@ -152,8 +159,8 @@
 				off: function(){
 					$(this).pluginOptions('hcSticky', {on: false}).each(function(){
 						var $this = $(this),
-							options = $this.pluginOptions('hcSticky'),
-							$wrapper = $this.parent('.' + options.wrapperClassName);
+								options = $this.pluginOptions('hcSticky'),
+								$wrapper = $this.parent('.' + options.wrapperClassName);
 
 						// clear position
 						$this.css({
@@ -179,8 +186,8 @@
 				},
 				destroy: function(){
 					var $this = $(this),
-						options = $this.pluginOptions('hcSticky'),
-						$wrapper = $this.parent('.' + options.wrapperClassName);
+							options = $this.pluginOptions('hcSticky'),
+							$wrapper = $this.parent('.' + options.wrapperClassName);
 
 					// reset position to original
 					$this.removeData('hcStickyInit').css({
@@ -196,6 +203,12 @@
 
 					// destroy wrapper
 					$this.unwrap();
+				},
+				resize: function() {
+					var $this = $(this),
+							options = $this.pluginOptions('hcSticky');
+
+					options.fn.resize();
 				}
 			});
 
@@ -215,78 +228,78 @@
 			return this.each(function(){
 
 				var $this = $(this),
-					options = $this.pluginOptions('hcSticky');
+						options = $this.pluginOptions('hcSticky');
 
 				var $wrapper = (function(){ // wrapper exists
-						var $this_wrapper = $this.parent('.' + options.wrapperClassName);
-						if ($this_wrapper.length > 0) {
-							$this_wrapper.css({
+							var $this_wrapper = $this.parent('.' + options.wrapperClassName);
+							if ($this_wrapper.length > 0) {
+								$this_wrapper.css({
+									'height': $this.outerHeight(true),
+									'width': (function(){
+										// check if wrapper already has width in %
+										var width = $this_wrapper.hcStyle('width');
+										if (width.indexOf('%') >= 0 || width == 'auto') {
+											if ($this.css('box-sizing') == 'border-box' || $this.css('-moz-box-sizing') == 'border-box') {
+												$this.css('width', $this_wrapper.width());
+											} else {
+												$this.css('width', $this_wrapper.width() - parseInt($this.css('padding-left') - parseInt($this.css('padding-right'))));
+											}
+											return width;
+										} else {
+											return $this.outerWidth(true);
+										}
+									})()
+								});
+								return $this_wrapper;
+							} else {
+								return false;
+							}
+						})() || (function(){ // wrapper doesn't exist
+
+							var this_css = $this.hcStyle(['width', 'margin-left', 'left', 'right', 'top', 'bottom', 'float', 'display']);
+							var display = $this.css('display');
+
+							var $this_wrapper = $('<div>', {
+								'class': options.wrapperClassName
+							}).css({
+								'display': display,
 								'height': $this.outerHeight(true),
 								'width': (function(){
-									// check if wrapper already has width in %
-									var width = $this_wrapper.style('width');
-									if (width.indexOf('%') >= 0 || width == 'auto') {
-										if ($this.css('box-sizing') == 'border-box' || $this.css('-moz-box-sizing') == 'border-box') {
-											$this.css('width', $this_wrapper.width());
-										} else {
-											$this.css('width', $this_wrapper.width() - parseInt($this.css('padding-left') - parseInt($this.css('padding-right'))));
-										}
-										return width;
+									if (this_css['width'].indexOf('%') >= 0 || (this_css['width'] == 'auto' && display != 'inline-block' && display != 'inline')) { // check if element has width in %
+										$this.css('width', parseFloat($this.css('width')));
+										return this_css['width'];
+									} else if (this_css['width'] == 'auto' && (display == 'inline-block' || display == 'inline')) {
+										return $this.width();
 									} else {
-										return $this.outerWidth(true);
+										// check if margin is set to 'auto'
+										return (this_css['margin-left'] == 'auto') ? $this.outerWidth() : $this.outerWidth(true);
 									}
-								})()
+								})(),
+								'margin': (this_css['margin-left']) ? 'auto' : null,
+								'position': (function(){
+									var position = $this.css('position');
+									return position == 'static' ? 'relative' : position;
+								})(),
+								'float': this_css['float'] || null,
+								'left': this_css['left'],
+								'right': this_css['right'],
+								'top': this_css['top'],
+								'bottom': this_css['bottom'],
+								'vertical-align': 'top'
 							});
-							return $this_wrapper;
-						} else {
-							return false;
-						}
-					})() || (function(){ // wrapper doesn't exist
 
-						var this_css = $this.style(['width', 'margin-left', 'left', 'right', 'top', 'bottom', 'float', 'display']);
-						var display = $this.css('display');
+							$this.wrap($this_wrapper);
 
-						var $this_wrapper = $('<div>', {
-							'class': options.wrapperClassName
-						}).css({
-							'display': display,
-							'height': $this.outerHeight(true),
-							'width': (function(){
-								if (this_css['width'].indexOf('%') >= 0 || (this_css['width'] == 'auto' && display != 'inline-block' && display != 'inline')) { // check if element has width in %
-									$this.css('width', parseFloat($this.css('width')));
-									return this_css['width'];
-								} else if (this_css['width'] == 'auto' && (display == 'inline-block' || display == 'inline')) {
-									return $this.width();
-								} else {
-									// check if margin is set to 'auto'
-									return (this_css['margin-left'] == 'auto') ? $this.outerWidth() : $this.outerWidth(true);
+							// ie7 inline-block fix
+							if (ie === 7) {
+								if ($('head').find('style#hcsticky-iefix').length === 0) {
+									$('<style id="hcsticky-iefix">.' + options.wrapperClassName + ' {zoom: 1;}</style>').appendTo('head');
 								}
-							})(),
-							'margin': (this_css['margin-left']) ? 'auto' : null,
-							'position': (function(){
-								var position = $this.css('position');
-								return position == 'static' ? 'relative' : position;
-							})(),
-							'float': this_css['float'] || null,
-							'left': this_css['left'],
-							'right': this_css['right'],
-							'top': this_css['top'],
-							'bottom': this_css['bottom'],
-							'vertical-align': 'top'
-						});
-
-						$this.wrap($this_wrapper);
-
-						// ie7 inline-block fix
-						if (ie === 7) {
-							if ($('head').find('style#hcsticky-iefix').length === 0) {
-								$('<style id="hcsticky-iefix">.' + options.wrapperClassName + ' {zoom: 1;}</style>').appendTo('head');
 							}
-						}
 
-						// return appended element
-						return $this.parent();
-					})();
+							// return appended element
+							return $this.parent();
+						})();
 
 
 				// check if we should go further
@@ -300,12 +313,12 @@
 
 				// select container ;)
 				var $container = options.stickTo
-					? stickTo_document
+						? stickTo_document
 						? $document
 						: typeof options.stickTo == 'string'
-							? $(options.stickTo)
-							: options.stickTo
-					: $wrapper.parent();
+						? $(options.stickTo)
+						: options.stickTo
+						: $wrapper.parent();
 
 				// clear sticky styles
 				$this.css({
@@ -315,7 +328,7 @@
 					right: 'auto'
 				});
 
-				// attach event on entire page load, maybe some images inside element has been loading, so chek height again
+				// attach event on entire page load, maybe some images inside element has been loading, so check height again
 				$window.load(function(){
 					if ($this.outerHeight(true) > $container.height()) {
 						$wrapper.css('height', $this.outerHeight(true));
@@ -325,67 +338,67 @@
 
 				// functions for attachiung and detaching sticky
 				var _setFixed = function(args) {
-						// check if already floating
-						if ($this.hasClass(options.className)) return;
+							// check if already floating
+							if ($this.hasClass(options.className)) return;
 
-						// apply styles
-						args = args || {};
-						$this.css({
-							position: 'fixed',
-							top: args.top || 0,
-							left: args.left || $wrapper.offset().left
-						}).addClass(options.className);
+							// apply styles
+							args = args || {};
+							$this.css({
+								position: 'fixed',
+								top: args.top || 0,
+								left: args.left || $wrapper.offset().left
+							}).addClass(options.className);
 
-						// start event
-						options.onStart.apply($this[0]);
-						// add class to wrpaeer
-						$wrapper.addClass('sticky-active');
-					},
-					_reset = function(args) {
-						args = args || {};
-						args.position = args.position || 'absolute';
-						args.top = args.top || 0;
-						args.left = args.left || 0;
+							// start event
+							options.onStart.apply($this[0]);
+							// add class to wrapper
+							$wrapper.addClass('sticky-active');
+						},
+						_reset = function(args) {
+							args = args || {};
+							args.position = args.position || 'absolute';
+							args.top = args.top || 0;
+							args.left = args.left || 0;
 
-						// check if we should apply css
-						if ($this.css('position') != 'fixed' && parseInt($this.css('top')) == args.top) return;
+							// check if we should apply css
+							if ($this.css('position') != 'fixed' && parseInt($this.css('top')) == args.top) return;
 
-						// apply styles
-						$this.css({
-							position: args.position,
-							top: args.top,
-							left: args.left
-						}).removeClass(options.className);
+							// apply styles
+							$this.css({
+								position: args.position,
+								top: args.top,
+								left: args.left
+							}).removeClass(options.className);
 
-						// stop event
-						options.onStop.apply($this[0]);
-						// remove class from wrpaeer
-						$wrapper.removeClass('sticky-active');
-					};
+							// stop event
+							options.onStop.apply($this[0]);
+							// remove class from wrapper
+							$wrapper.removeClass('sticky-active');
+						};
 
 				// sticky scroll function
 				var onScroll = function(init) {
 
 					// check if we need to run sticky
-	        if (!options.on || !$this.is(':visible')) return;
+					if (!options.on || !$this.is(':visible')) return;
 
-	        // if the element is the same height or larger than the container then let's reset it so that it returns to the original position
-	        if ($this.outerHeight(true) >= $container.height()) {
-	            _reset();
+					// if the element is the same height or larger than the container then let's reset it so that it returns to the original position
+					if ($this.outerHeight(true) >= $container.height()) {
+						_reset();
 
-	            return;
-	        }
+						return;
+					}
 
 					var top_spacing = (options.innerSticker) ? $(options.innerSticker).position().top : ((options.innerTop) ? options.innerTop : 0),
-						wrapper_inner_top = $wrapper.offset().top,
-						bottom_limit = $container.height() - options.bottomEnd + (stickTo_document ? 0 : wrapper_inner_top),
-						top_limit = $wrapper.offset().top - options.top + top_spacing,
-						this_height = $this.outerHeight(true) + options.bottom,
-						window_height = $window.height(),
-						offset_top = $window.scrollTop(),
-						this_document_top = $this.offset().top,
-						this_window_top = this_document_top - offset_top,
-						bottom_distance;
+							wrapper_inner_top = $wrapper.offset().top,
+							bottom_limit = $container.height() - options.bottomEnd + (stickTo_document ? 0 : wrapper_inner_top),
+							top_limit = $wrapper.offset().top - options.top + top_spacing,
+							this_height = $this.outerHeight(true) + options.bottom,
+							window_height = $window.height(),
+							offset_top = $window.scrollTop(),
+							this_document_top = $this.offset().top,
+							this_window_top = this_document_top - offset_top,
+							bottom_distance;
 
 
 					// if sticky has been restarted with on/off wait for it to reach top or bottom
@@ -439,7 +452,7 @@
 
 							if (this_window_top + this_height <= window_height) { // element bigger than window with follow scroll on
 
-								if (getScroll.direction == 'down') {
+								if (hcGetScroll.direction == 'down') {
 									// scroll down
 									_setFixed({
 										top: window_height - this_height
@@ -448,22 +461,22 @@
 									// scroll up
 									if (this_window_top < 0 && $this.css('position') == 'fixed') {
 										_reset({
-											top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
+											top: this_document_top - (top_limit + options.top - top_spacing) - hcGetScroll.distanceY
 										});
 									}
 								}
 
 							} else { // element smaller than window or follow scroll turned off
 
-								if (getScroll.direction == 'up' && this_document_top >= offset_top + options.top - top_spacing) {
+								if (hcGetScroll.direction == 'up' && this_document_top >= offset_top + options.top - top_spacing) {
 									// scroll up
 									_setFixed({
 										top: options.top - top_spacing
 									});
-								} else if (getScroll.direction == 'down' && this_document_top + this_height > window_height && $this.css('position') == 'fixed') {
+								} else if (hcGetScroll.direction == 'down' && this_document_top + this_height > window_height && $this.css('position') == 'fixed') {
 									// scroll down
 									_reset({
-										top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
+										top: this_document_top - (top_limit + options.top - top_spacing) - hcGetScroll.distanceY
 									});
 								}
 
@@ -484,7 +497,7 @@
 
 				// store resize data in case responsive is on
 				var resize_timeout = false,
-					$resize_clone = false;
+						$resize_clone = false;
 
 				var onResize = function() {
 
@@ -522,14 +535,14 @@
 							$wrapper.after($resize_clone);
 						}
 
-						var wrapper_width = $wrapper.style('width');
-						var resize_clone_width = $resize_clone.style('width');
+						var wrapper_width = $wrapper.hcStyle('width');
+						var resize_clone_width = $resize_clone.hcStyle('width');
 
 						if (resize_clone_width == 'auto' && wrapper_width != 'auto') {
 							resize_clone_width = parseInt($this.css('width'));
 						}
 
-						// recalculate wrpaeer width
+						// recalculate wrapper width
 						if (resize_clone_width != wrapper_width) {
 							$wrapper.width(resize_clone_width);
 						}
@@ -538,7 +551,7 @@
 						if (resize_timeout) {
 							clearTimeout(resize_timeout);
 						}
-						// timedout destroing of cloned elements so we don't clone it again and again while resizing the window
+						// time out destroying cloned elements so we don't clone it again and again while resizing the window
 						resize_timeout = setTimeout(function() {
 							// clear timeout id
 							resize_timeout = false;
@@ -554,8 +567,8 @@
 					// recalculate inner element width (maybe original width was in %)
 					if ($this.outerWidth(true) != $wrapper.width()) {
 						var this_w = ($this.css('box-sizing') == 'border-box' || $this.css('-moz-box-sizing') == 'border-box')
-							? $wrapper.width()
-							: $wrapper.width() - parseInt($this.css('padding-left')) - parseInt($this.css('padding-right'));
+								? $wrapper.width()
+								: $wrapper.width() - parseInt($this.css('padding-left')) - parseInt($this.css('padding-right'));
 						// subtract margins
 						this_w = this_w - parseInt($this.css('margin-left')) - parseInt($this.css('margin-right'));
 						// set new width
@@ -589,7 +602,7 @@
 									$this.hcSticky('off');
 								}
 							} else {
-								// abowe
+								// above
 								if ($window.width() > rez) {
 									isOn = false;
 									$this.hcSticky('off');
@@ -633,21 +646,16 @@
 		}
 	});
 
-})(jQuery, this);
 
 
-
-// jQuery HC-PluginOptions
-// =============
-// Version: 1.0
-// Copyright: Some Web Media
-// Author: Some Web Guy
-// Author URL: http://twitter.com/some_web_guy
-// Website: http://someweblog.com/
-// License: Released under the MIT License www.opensource.org/licenses/mit-license.php
-
-(function($, undefined) {
-	"use strict";
+	// jQuery HC-PluginOptions
+	// =============
+	// Version: 1.0
+	// Copyright: Some Web Media
+	// Author: Some Web Guy
+	// Author URL: http://twitter.com/some_web_guy
+	// Website: http://someweblog.com/
+	// License: Released under the MIT License www.opensource.org/licenses/mit-license.php
 
 	$.fn.extend({
 
@@ -696,5 +704,7 @@
 		}
 
 	});
+})($);
 
-})(jQuery);
+
+

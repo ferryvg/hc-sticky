@@ -1,6 +1,8 @@
 HC-Sticky
 =========
 
+Node.js version of jQuery HC-Sticky plug-in.
+
 > v.1.2.43
 
 
