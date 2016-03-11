@@ -1,7 +1,7 @@
 {
   "name": "jquery-hc-sticky",
   "version": "1.0.0",
-  "main": "jquery-hc-sticky.js",
+  "main": "jquery.hc-sticky.js",
   "author": "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
   "license": "MIT",
   "private": true,
