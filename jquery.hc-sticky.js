@@ -447,9 +447,15 @@
 								} else {
 									// scroll up
 									if (this_window_top < 0 && $this.css('position') == 'fixed') {
-										_reset({
-											top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
-										});
+										if (getScroll.distanceY < (this_height - this_window_top * -1)) {
+											_setFixed({
+                                                top: window_height - this_height
+											});
+                                        } else {
+											_reset({
+												top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
+											});
+										}
 									}
 								}
 
@@ -462,9 +468,15 @@
 									});
 								} else if (getScroll.direction == 'down' && this_document_top + this_height > window_height && $this.css('position') == 'fixed') {
 									// scroll down
-									_reset({
-										top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
-									});
+									if (getScroll.distanceY > this_height - window_height) {
+										_setFixed({
+                                            top: options.top - top_spacing
+										});
+                                    } else {
+										_reset({
+											top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
+										});
+									}
 								}
 
 							}
