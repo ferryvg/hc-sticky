@@ -161,7 +161,8 @@
 							top: 'auto',
 							bottom: 'auto',
 							left: 'auto',
-							right: 'auto'
+							right: 'auto',
+							width: 'auto'
 						}).removeClass(options.className);
 
 						$wrapper.css('height', 'auto');
