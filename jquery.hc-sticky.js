@@ -448,7 +448,7 @@
 								} else {
 									// scroll up
 									if (this_window_top < 0 && $this.css('position') == 'fixed') {
-										if (getScroll.distanceY < (this_height - this_window_top * -1)) {
+										if (getScroll.distanceY < ((this_height - this_window_top) * -1)) {
 											_setFixed({
                                                 top: window_height - this_height
 											});
