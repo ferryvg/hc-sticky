@@ -317,7 +317,7 @@
 				});
 
 				// attach event on entire page load, maybe some images inside element has been loading, so chek height again
-				$window.load(function(){
+				$(function(){
 					if ($this.outerHeight(true) > $container.height()) {
 						$wrapper.css('height', $this.outerHeight(true));
 						$this.hcSticky('reinit');
