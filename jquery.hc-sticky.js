@@ -168,7 +168,8 @@ var $ = require('jquery');
 							top: 'auto',
 							bottom: 'auto',
 							left: 'auto',
-							right: 'auto'
+							right: 'auto',
+							width: 'auto'
 						}).removeClass(options.className);
 
 						$wrapper.css('height', 'auto');
@@ -328,8 +329,8 @@ var $ = require('jquery');
 					right: 'auto'
 				});
 
-				// attach event on entire page load, maybe some images inside element has been loading, so check height again
-				$window.load(function(){
+				// attach event on entire page load, maybe some images inside element has been loading, so chek height again
+				$(function(){
 					if ($this.outerHeight(true) > $container.height()) {
 						$wrapper.css('height', $this.outerHeight(true));
 						$this.hcSticky('reinit');
@@ -460,9 +461,15 @@ var $ = require('jquery');
 								} else {
 									// scroll up
 									if (this_window_top < 0 && $this.css('position') == 'fixed') {
-										_reset({
-											top: this_document_top - (top_limit + options.top - top_spacing) - hcGetScroll.distanceY
-										});
+										if (getScroll.distanceY < ((this_height - this_window_top) * -1)) {
+											_setFixed({
+                                                top: window_height - this_height
+											});
+                                        } else {
+											_reset({
+												top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
+											});
+										}
 									}
 								}
 
@@ -475,9 +482,15 @@ var $ = require('jquery');
 									});
 								} else if (hcGetScroll.direction == 'down' && this_document_top + this_height > window_height && $this.css('position') == 'fixed') {
 									// scroll down
-									_reset({
-										top: this_document_top - (top_limit + options.top - top_spacing) - hcGetScroll.distanceY
-									});
+									if (getScroll.distanceY > this_height - window_height) {
+										_setFixed({
+                                            top: options.top - top_spacing
+										});
+                                    } else {
+										_reset({
+											top: this_document_top - (top_limit + options.top - top_spacing) - getScroll.distanceY
+										});
+									}
 								}
 
 							}
